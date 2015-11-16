@@ -1,0 +1,88 @@
+﻿
+    <section class="conteudo-branco">
+        <div class="container">
+            <div class="row ">
+                    <h1 class="text-center">Cadastre-se no site para começar a armazenar!</h1>
+                @using(Html.BeginForm("Cadastrar","Home",FormMethod.Post))
+                {
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="nome-cad">Digite seu nome de sua empresa</label>
+                            <input type="text" id="nome-cad" name="nome" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="razao-cad">Digite a razão social de sua empresa</label>
+                            <input type="text" id="razao-cad" name="razao" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="titular-cad">Digite o titular da empresa</label>
+                            <input type="text" id="titular-cad" name="titular" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="login-cad">Digite o login que deseja</label>
+                            <input type="text" id="login-cad" name="login" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="senha-cad">Digite a senha que deseja</label>
+                            <input type="password" id="senha-cad" name="senha" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="senha2-cad">Digite a senha novamente</label>
+                            <input type="password" id="senha2-cad" name="senha2" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="email-cad">Digite o seu email</label>
+                            <input type="email" id="email-cad" name="email" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="telefone-cad">Digite o seu telefone</label>
+                            <input type="text" id="telefone-cad" name="telefone" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="celular-cad">Digite o seu celular</label>
+                            <input type="text" id="celular-cad" name="celular" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="cep-cad">Digite o <abbr title="Código de Endereço Postal">CEP</abbr></label>
+                            <input type="text" id="cep-cad" name="cep" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="rua-cad">Rua</label>
+                            <input type="text" id="rua-cad" name="rua" class="form-control" data-cep="logradouro">
+                        </div>
+                        <div class="form-group">
+                            <label for="bairro-cad">Bairro</label>
+                            <input type="text" id="bairro-cad" name="bairro" class="form-control" data-cep="bairro">
+                        </div>
+                        <div class="form-group">
+                            <label for="cidade-cad">Cidade</label>
+                            <input type="text" id="cidade-cad" name="cidade" class="form-control" data-cep="cidade">
+                        </div>
+                        <div class="form-group">
+                            <label for="estado-cad">Estado</label>
+                            <input type="text" id="estado-cad" name="estado" class="form-control" data-cep="uf">
+                        </div>
+                        <div class="form-group">
+                            <label for="pais-cad">Digite o país</label>
+                            <input type="text" id="pais-cad" name="pais" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="numero-cad">Digite o número</label>
+                            <input type="text" id="numero-cad" name="numero" class="form-control">
+                        </div>
+                    </div>
+                    <div>
+                        <input type="submit" id="submit-cad" name="submit" class="btn btn-primary pull-right" value="Cadastre-me!">
+
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+
+@if (TempData["certo"] != null)
+{
+    <script>alert("@TempData["certo"].ToString()");</script>
+}

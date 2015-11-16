@@ -1,0 +1,28 @@
+﻿<div class="row">
+    <section class="conteudo-branco">
+        <div class="container">
+            <div class="row conteudo">
+                <h1>Login</h1>
+                <div class="container-login col-sm-6 col-sm-offset-3">
+                    <form id="form-login" action="">
+                        <div class="group-form">
+                            <label for="">Digite seu login</label>
+                            <input type="text" id="login" name="login" class="form-control">
+                        </div><br>
+                        <div class="group-form">
+                            <label for="">Digite sua senha</label>
+                            <input type="password" id="senha" name="senha" class="form-control">
+                        </div><br>
+                        <input type="submit" id="submit-login" name="submit-login" class="btn btn-primary pull-right" value="Logar">
+                        @Html.ActionLink("Não tem conta? Cadastre-se", "Cadastrar", "Home", null, new { @class = "btn-link" })
+                        <div class="clearfix"></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+@if (TempData["certo"] != null)
+{
+    <script>alert("@TempData["certo"].ToString()");</script>
+}

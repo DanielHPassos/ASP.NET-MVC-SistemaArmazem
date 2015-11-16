@@ -1,0 +1,151 @@
+﻿@using SistemaArmazem.Models.Repositories
+@using SistemaArmazem.Models.Negocio
+@{
+    ClasseRepository classeRepository = new ClasseRepository();
+    ArmazenagemRepository armazenagemRepository = new ArmazenagemRepository();
+    TamanhoArmazemRepository tamanhoArmazemRepository = new TamanhoArmazemRepository();
+}
+<div class="row">
+    <section class="conteudo-branco">
+        <div class="container">
+            <div class="conteudo row">
+                <div class="cabecalho col-sm-12">
+                    <!--
+                        /<h1> e <p> muda se o usuário estiver logado/
+                        Se estiver logado:
+                            h1: Lista de armazenagem
+                            p: (nada)
+                        Senão:
+                            h1: Simulação
+                            p: A área de simulação é destinada àqueles que querem estimar o preço para a armazenagem
+                     -->
+                    @if (Session["User"] == null)
+                    {
+                        <h1>Simulação</h1>
+                        <p>A área de simulação é destinada àqueles que querem estimar o preço para a armazenagem</p>
+                    }
+                    else
+                    {
+                        <h1>Lista de armazenagem</h1>
+                    }
+
+                </div>
+                @using (Html.BeginForm("Simulacao", "Home", FormMethod.Post))
+                {
+                    <!-- esquerda -->
+                    <div class="col-sm-6">
+                        <div class="form-group grupo-prod">
+                            <label for="classe-prod">Escolha a classe do seu produto</label>
+                            <select name="classe" id="classe-prod" class="form-control">
+                                <option value="0" class="dropdown-header">Escolha a classe</option>
+                                @{
+                    
+                    int count = 1;
+                    foreach (var c in classeRepository.Listar())
+                    {
+                        <option value="@count">Classe @count - @c.nmClasse</option>
+                        count++;
+                    }
+                    count = 1;
+                                }
+                            </select>
+                        </div>
+                        <!-- caso (if) haja Subclasse: mostrar -->
+                        <div id="subclasse-retorno-ajax">
+                            <div class="form-group grupo-prod">
+                                <label for="subclasse-prod">Escolha a subclasse do seu produto</label>
+                                <select name="subclasse" id="subclasse-prod" class="form-control">
+                                    <option value="0" class="dropdown-header">Escolha a subclasse</option>
+
+                                </select>
+                            </div>
+                        </div>
+                        <!-- fim (if)-->
+
+                        <div class="form-group grupo-prod">
+                            <label for="armazenagem-prod">Escolha o tipo de armazenagem</label>
+                            <select name="armazenagem" id="armazenagem-prod" class="form-control">
+                                <option value="0" class="dropdown-header">Escolha a armazenagem</option>
+                                @{
+                    
+                    int count2 = 1;
+                    foreach (var c in armazenagemRepository.Listar())
+                    {
+                        <option value="@count">Classe @count - @c.tpArmazenagem</option>
+                        count2++;
+                    }
+                    count2 = 1;
+                                }
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- direita -->
+                    <div class="col-sm-6">
+                        <div class="group-form grupo-prod">
+                            <label for="qtde-prod">Selecione a Quantidade.</label><br />
+                            <label class="text-info">Total disponível no momento é: </label>
+                            @foreach (var armazem in tamanhoArmazemRepository.Listar())
+                            {
+                                <label class="alert-success">@Negocio.espacoLivre(armazem.tamanhoArmazemId)</label>
+                            }
+                            <input type="number" id="qtde-prod" name="qtd" class="form-control" placeholder="ex: 2">
+                        </div>
+                        <div class="row grupo-prod">
+                            <div class="col-sm-6">
+                                <div class="group-form">
+                                    <label for="dt-inicio-prod">Data de Início</label>
+                                    <input type="date" id="dt-inicio-prod" name="dtInicio" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="group-form">
+                                    <label for="dt-fim-prod">Data de Fim</label>
+                                    <input type="date" id="dt-fim-prod" name="dtFim" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--
+                        /A ação e o atributo 'value' do submit muda se o usuário estiver logado/
+                        Se estiver logado: Adicionar a lista de produtos que desejo armazenar
+                        Senão: Quero saber a simulação para este produto!
+                     -->
+                    <div>
+                        @if (Session["User"] == null)
+                        {
+                            <input type="submit" id="submit-prod" class="btn btn-primary btn-block btn-lg" value="Realizar minha simulação!">
+                        }
+                        else
+                        {
+                            <input type="submit" id="submit-prod" class="btn btn-primary btn-block btn-lg" value="Realizar meu pedido!">
+                        }
+
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+</div>
+<script>
+    $(document).ready(function () {
+        var classeCombo = $("#classe");
+        var subclasseCombo = $("#subclasse");
+
+
+        $(classeCombo).change(function () {
+            subclasseCombo.html = "";
+            $.getJSON(
+                "/Home/trazerSubClasse",
+                classeCombo.val(),
+                function (data) {
+
+                    $.each(
+                        data,
+                        function (i, item) {
+                            subclasseCombo.append("<option value=" + (i + 1) + ">" + item.nmSubClasse + "</option>");
+                        });
+                });
+        });
+    });
+</script>

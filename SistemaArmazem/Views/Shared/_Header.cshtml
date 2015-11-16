@@ -1,0 +1,35 @@
+﻿<div class="row">
+    <nav class="nav navbar-default menu-topo">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu-fixo" aria-expanded="false">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Armazém", "Index", "Home", null, new { @class = "navbar-brand logotipo" })
+            </div>
+            <div id="menu-fixo" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav pull-right">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("Simulacao", "Simulacao", "Home")</li>
+                    <li>@Html.ActionLink("Contato", "Contato", "Home")</li>
+                    @if (Session["User"] == null)
+                    {
+                    <li>@Html.ActionLink("Login", "Login", "Home")</li>
+                    }
+                    else
+                    { 
+                    <li>@Html.ActionLink("LogOff", "LogOff", "Home")</li>
+                    }
+                    <li>
+                        <button class="btn btn-default btn-cadastrar-menu">
+                            @Html.ActionLink("Cadastre-se", "Cadastrar", "Home")
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <hr class="divisoria-menu">
+</div>

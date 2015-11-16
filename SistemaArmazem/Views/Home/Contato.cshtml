@@ -1,0 +1,33 @@
+﻿<div class="row">
+    <section class="conteudo-branco">
+        <div class="container">
+            <div class="row conteudo">
+                <h1>Contate-nos!</h1>
+                <div class="container-contato col-sm-6 col-sm-offset-3">
+                    @using(Html.BeginForm("Contato","Home",FormMethod.Post))
+                    {
+                    <div class="form-group">
+                        <label for="nome-cont">Digite seu nome</label>
+                        <input type="text" id="nome-cont" name="nome" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="email-cont">Digite seu email</label>
+                        <input type="email" id="email-cont" name="email" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="texto-cont">Digite o que deseja nos falar</label>
+                        <textarea name="texto" id="texto-cont" class="form-control" rows="10"></textarea>
+                    </div>
+                    <input type="submit" id="submit-cont" name="submit" class="btn btn-primary pull-right" value="Enviar">
+                    <div class="clearfix"></div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+@if(TempData["certo"] != null)
+{
+    <script>alert("@TempData["certo"].ToString()");</script>
+}
