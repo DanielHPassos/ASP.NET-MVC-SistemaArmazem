@@ -196,6 +196,7 @@
     <Content Include="Views\Home\Contato.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Home\Simulacao.cshtml" />
+    <Content Include="Views\Home\PainelControle.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

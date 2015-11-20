@@ -163,10 +163,53 @@ namespace SistemaArmazem.Controllers
                 if (Negocio.armazemTemEspacoPraIsso(qtdarmazem,idarmazem))
                 {
                     var dias = dtFim - dtInicio;
-                    int valorTotal = Convert.ToInt32(((dias.TotalDays*10) * qtdarmazem)+1000);
-                    string msg = "Valor total a ser pago e: "+ valorTotal;
-                    TempData["certo"] = msg;
-                    return View();
+                    decimal valorTotal = Convert.ToInt32(((dias.TotalDays * 10) * qtdarmazem) + 1000);
+
+                    if (Session["User"] != null)
+                    {
+                        PedidoRepository pedidoRepository = new PedidoRepository();
+                        ArmazemRepository armazemRepository = new ArmazemRepository();
+                        Armazem armazem = new Armazem();
+                        
+                        var nome = ((Cliente)(Session["User"])).nome;
+                        var email = ((Cliente)(Session["User"])).email;
+                        var clienteID = ((Cliente)(Session["User"])).clienteId;
+
+                        armazem.clienteId = clienteID;
+                        armazem.usadoArmazem = qtdarmazem;
+                        armazem.tamanhoArmazemId = idarmazem;
+                        //armazemRepository.Add(armazem);
+
+                        Pedido pedido = new Pedido()
+                        {
+                            clienteId = clienteID,
+                            classeId = Convert.ToInt32(classe),
+                            subclasseId = Convert.ToInt32(subclasse),
+                            armazenagemId = Convert.ToInt32(armazenagem),
+                            armazem = armazem,//Convert.ToInt32(idarmazem),
+                            dtInicio = dtInicio,
+                            dtFim = dtFim,
+                            valorTotal = valorTotal,
+                            ckstatus = false
+                        };
+
+                        pedidoRepository.Add(pedido);
+                        
+                        string msg = "Valor total a ser pago e: " + valorTotal + "\nOs dados do seu pedido, serao enviados para o seu e-mail.\nVerifique sua caixa de entrada.";
+                        EnviarMensagem em = new EnviarMensagem("daniel.hpassos@gmail.com",email , "Vindo do Sistema de Armazem", String.Format("Olá {0},\n\nObrigado por realizar o pedido em nosso sistema!\n\nOs dados do seu pedido são,\nCliente: {0}\nClasse Prod: {1}\nSubClasse Prod: {2}\nID do Armazem: {3}\nData de Início: {4}\nData de Fim: {5}\nValor total a ser pago: {6}\nStatus do pedido: {7}", nome, classe,subclasse,idarmazem,dtInicio,dtFim,valorTotal,"Não pago"), "Daniel");
+                        em.SubmeterEmail();
+                        TempData["certo"] = "teste";
+                        return View("Index");
+                    }
+                    else
+                    {
+                        dias = dtFim - dtInicio;
+                        valorTotal = Convert.ToInt32(((dias.TotalDays * 10) * qtdarmazem) + 1000);
+                        string msg = "Valor total a ser pago e: " + valorTotal;
+                        TempData["certo"] = msg;
+                        return View();
+                    }
+                    
                 }
                 else
                 {
