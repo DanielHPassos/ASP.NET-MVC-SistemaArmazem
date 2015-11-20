@@ -12,3 +12,30 @@
         </div>
     </div>
 </footer>
+<div id="loading"><img src="~/Content/Imagens/loader.gif" /></div>
+<style type="text/css">
+    #loading {
+        display: none;
+        background-color: gray;
+        z-index: 999999;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        padding-top: 300px;
+        filter: alpha(opacity=75); /* internet explorer */
+        -khtml-opacity: 0.75; /* khtml, old safari */
+        -moz-opacity: 0.75; /* mozilla, netscape */
+        opacity: 0.75; /* fx, safari, opera */
+    }
+</style>
+<script>
+    $(document).ajaxStart(function () {
+        $('#loading').show();
+    });
+    $(document).ajaxStop(function () {
+        $('#loading').hide();
+    });
+</script>

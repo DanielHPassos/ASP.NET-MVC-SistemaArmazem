@@ -1,4 +1,5 @@
-﻿<div class="row">
+﻿@using SistemaArmazem.Models.Entities
+<div class="row">
     <nav class="nav navbar-default menu-topo">
         <div class="container">
             <div class="navbar-header">
@@ -22,9 +23,7 @@
                         <li>@Html.ActionLink("Login", "Login", "Home")</li>
 
                         <li>
-                            <button class="btn btn-default btn-cadastrar-menu">
-                                @Html.ActionLink("Cadastre-se", "Cadastrar", "Home")
-                            </button>
+                            <span class="btn btn-default btn-cadastrar-menu">@Html.ActionLink("Cadastre-se", "Cadastrar", "Home")</span>
                         </li>
                     }
                     else
@@ -36,6 +35,20 @@
                         <li>@Html.ActionLink("Contato", "Contato", "Home")</li>
 
                         <li>@Html.ActionLink("LogOff", "LogOff", "Home")</li>
+
+                        if (((Cliente)(Session["User"])).grupo == "member")
+                        {
+                            <li>
+                                <span class="btn btn-default btn-cadastrar-menu">@Html.ActionLink("Painel de Controle", "PaineldeControleUsuario", "Home")</span>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <span class="btn btn-default btn-cadastrar-menu">@Html.ActionLink("Painel de Controle", "PaineldeControleAdmin", "Home")</span>
+                            </li>
+                        }
+
                     }
                 </ul>
             </div>

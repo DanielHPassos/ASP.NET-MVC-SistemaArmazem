@@ -52,25 +52,25 @@ namespace SistemaArmazem.Controllers
         {
             try
             {
-                    Cliente cliente = new Cliente()
-                    {
-                        nome = nome,
-                        razao = razao,
-                        titular = titular,
-                        login = login,
-                        senha = senha,
-                        email = email,
-                        telefone = telefone,
-                        celular = celular,
-                        cep = cep,
-                        rua = rua,
-                        bairro = bairro,
-                        cidade = cidade,
-                        estado = estado,
-                        pais = pais,
-                        numero = numero,
-                        grupo = grupo
-                    };
+                Cliente cliente = new Cliente()
+                {
+                    nome = nome,
+                    razao = razao,
+                    titular = titular,
+                    login = login,
+                    senha = senha,
+                    email = email,
+                    telefone = telefone,
+                    celular = celular,
+                    cep = cep,
+                    rua = rua,
+                    bairro = bairro,
+                    cidade = cidade,
+                    estado = estado,
+                    pais = pais,
+                    numero = numero,
+                    grupo = grupo
+                };
 
 
                 clienteRepository.Add(cliente);
@@ -104,9 +104,9 @@ namespace SistemaArmazem.Controllers
                     Session.Add("User", cliente);
                     TempData["certo"] = "Logado com sucesso!";
                     if (((Cliente)Session["User"]).grupo == "member")
-                        return View("Index");
+                        return View("PaineldeControleUsuario");
                     else
-                        return View("Painel");
+                        return View("PaineldeControleAdmin");
 
                 }
                 else
@@ -135,17 +135,17 @@ namespace SistemaArmazem.Controllers
         }
 
         [HttpPost]
-        public ActionResult Simulacao(string classe, string subclasse, string armazenagem,int idarmazem ,int qtdarmazem,
+        public ActionResult Simulacao(string classe, string subclasse, string armazenagem, int idarmazem, int qtdarmazem,
             DateTime dtInicio, DateTime dtFim)
         {
             try
             {
-                if(string.IsNullOrWhiteSpace(classe) && string.IsNullOrWhiteSpace(subclasse) && string.IsNullOrWhiteSpace(subclasse) && string.IsNullOrWhiteSpace(armazenagem))
+                if (string.IsNullOrWhiteSpace(classe) && string.IsNullOrWhiteSpace(subclasse) && string.IsNullOrWhiteSpace(subclasse) && string.IsNullOrWhiteSpace(armazenagem))
                 {
                     TempData["erro"] = "Não deixe espaços em branco!";
                     return View();
                 }
-                if(DateTime.Now.Day > dtInicio.Day)
+                if (DateTime.Now.Day > dtInicio.Day)
                 {
                     TempData["erro"] = "A data de inicio não pode ser menor que a data de hoje!";
                     return View();
@@ -155,12 +155,12 @@ namespace SistemaArmazem.Controllers
                     TempData["erro"] = "A data de Fim não pode ser menor que a data de Inicio!";
                     return View();
                 }
-                if(qtdarmazem <= 0)
+                if (qtdarmazem <= 0)
                 {
                     TempData["erro"] = "Quantidade de espaço não pode ser zero ou vazia!";
                     return View();
                 }
-                if (Negocio.armazemTemEspacoPraIsso(qtdarmazem,idarmazem))
+                if (Negocio.armazemTemEspacoPraIsso(qtdarmazem, idarmazem))
                 {
                     var dias = dtFim - dtInicio;
                     decimal valorTotal = Convert.ToInt32(((dias.TotalDays * 10) * qtdarmazem) + 1000);
@@ -170,7 +170,7 @@ namespace SistemaArmazem.Controllers
                         PedidoRepository pedidoRepository = new PedidoRepository();
                         ArmazemRepository armazemRepository = new ArmazemRepository();
                         Armazem armazem = new Armazem();
-                        
+
                         var nome = ((Cliente)(Session["User"])).nome;
                         var email = ((Cliente)(Session["User"])).email;
                         var clienteID = ((Cliente)(Session["User"])).clienteId;
@@ -194,11 +194,11 @@ namespace SistemaArmazem.Controllers
                         };
 
                         pedidoRepository.Add(pedido);
-                        
+
                         string msg = "Valor total a ser pago e: " + valorTotal + "\nOs dados do seu pedido, serao enviados para o seu e-mail.\nVerifique sua caixa de entrada.";
-                        EnviarMensagem em = new EnviarMensagem("daniel.hpassos@gmail.com",email , "Vindo do Sistema de Armazem", String.Format("Olá {0},\n\nObrigado por realizar o pedido em nosso sistema!\n\nOs dados do seu pedido são,\nCliente: {0}\nClasse Prod: {1}\nSubClasse Prod: {2}\nID do Armazem: {3}\nData de Início: {4}\nData de Fim: {5}\nValor total a ser pago: {6}\nStatus do pedido: {7}", nome, classe,subclasse,idarmazem,dtInicio,dtFim,valorTotal,"Não pago"), "Daniel");
+                        EnviarMensagem em = new EnviarMensagem("daniel.hpassos@gmail.com", email, "Vindo do Sistema de Armazem", String.Format("Olá {0},\n\nObrigado por realizar o pedido em nosso sistema!\n\nOs dados do seu pedido são,\nCliente: {0}\nClasse Prod: {1}\nSubClasse Prod: {2}\nID do Armazem: {3}\nData de Início: {4}\nData de Fim: {5}\nValor total a ser pago: {6}\nStatus do pedido: {7}", nome, classe, subclasse, idarmazem, dtInicio, dtFim, valorTotal, "Não pago"), "Daniel");
                         em.SubmeterEmail();
-                        TempData["certo"] = "teste";
+                        TempData["certo"] = msg;
                         return View("Index");
                     }
                     else
@@ -209,14 +209,14 @@ namespace SistemaArmazem.Controllers
                         TempData["certo"] = msg;
                         return View();
                     }
-                    
+
                 }
                 else
                 {
                     TempData["erro"] = "Falha na simulacao! Voce selecionou mais espaco que o disponivel.";
                     return View();
                 }
-                
+
             }
             catch (Exception ex)
             {
@@ -229,7 +229,82 @@ namespace SistemaArmazem.Controllers
         {
             SubClasseRepository subClasseRepository = new SubClasseRepository();
             var listaSubClasses = subClasseRepository.Listar().Where(x => x.classeId == idClasse);
-            return Json(listaSubClasses , JsonRequestBehavior.AllowGet);
+            return Json(listaSubClasses, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult PaineldeControleUsuario()
+        {
+            return View();
+        }
+
+        public ActionResult PaineldeControleAdmin()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult PaineldeControleAdmin(int pedidoId)
+        {
+            PedidoRepository pedidoRepository = new PedidoRepository();
+            var pedido = pedidoRepository.Buscar(pedidoId);
+            pedido.ckstatus = true;
+            pedidoRepository.Update(pedido);
+
+            return Json(new { mensagem = "Status de pagamento alterado com sucesso!" });
+        }
+
+        [HttpGet]
+        public JsonResult trazerPedidosUsuario()
+        {
+            List<PedidoView> ListaPedidoView = new List<PedidoView>();
+            PedidoRepository pedidoRepository = new PedidoRepository();
+
+            foreach (var item in pedidoRepository.Listar().Where(x => x.clienteId == ((Cliente)Session["User"]).clienteId))
+            {
+                PedidoView pedido = new PedidoView()
+                {
+                    pedidoId = item.pedidoId,
+                    clienteId = item.clienteId,
+                    classeId = item.classeId,
+                    subclasseId = item.subclasseId,
+                    armazenagemId = item.armazenagemId,
+                    armazemId = item.armazemId,
+                    dtInicio = item.dtInicio.ToShortDateString(),
+                    dtFim = item.dtFim.ToShortDateString(),
+                    valorTotal = item.valorTotal,
+                    ckstatus = item.ckstatus
+                };
+
+                ListaPedidoView.Add(pedido);
+            }
+
+            return Json(ListaPedidoView, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult trazerPedidosAdmin()
+        {
+            List<PedidoView> ListaPedidoView = new List<PedidoView>();
+            PedidoRepository pedidoRepository = new PedidoRepository();
+            foreach (var item in pedidoRepository.Listar())
+            {
+                PedidoView pedido = new PedidoView()
+                {
+                    pedidoId = item.pedidoId,
+                    clienteId = item.clienteId,
+                    classeId = item.classeId,
+                    subclasseId = item.subclasseId,
+                    armazenagemId = item.armazenagemId,
+                    armazemId = item.armazemId,
+                    dtInicio = item.dtInicio.ToShortDateString(),
+                    dtFim = item.dtFim.ToShortDateString(),
+                    valorTotal = item.valorTotal,
+                    ckstatus = item.ckstatus
+                };
+
+                ListaPedidoView.Add(pedido);
+            }
+            return Json(ListaPedidoView, JsonRequestBehavior.AllowGet);
         }
     }
 }
