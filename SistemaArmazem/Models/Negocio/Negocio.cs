@@ -71,5 +71,9 @@ namespace SistemaArmazem.Models.Negocio
                 return -1;
             }
         }
+        public static long retornaDiferencaEntreDuasDatas(DateTime fim,DateTime inicio)
+        {
+            return ((((((fim.Ticks - inicio.Ticks) / 1000) / 1000) / 60) / 24) / 6) / 100;
+        }
     }
 }

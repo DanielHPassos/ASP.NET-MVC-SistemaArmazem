@@ -145,12 +145,12 @@ namespace SistemaArmazem.Controllers
                     TempData["erro"] = "Não deixe espaços em branco!";
                     return View();
                 }
-                if (DateTime.Now.Day > dtInicio.Day)
+                if (DateTime.Now.Ticks > dtInicio.Ticks)
                 {
                     TempData["erro"] = "A data de inicio não pode ser menor que a data de hoje!";
                     return View();
                 }
-                if (dtFim.Day <= dtInicio.Day)
+                if (dtFim.Ticks <= dtInicio.Ticks)
                 {
                     TempData["erro"] = "A data de Fim não pode ser menor que a data de Inicio!";
                     return View();
@@ -162,8 +162,8 @@ namespace SistemaArmazem.Controllers
                 }
                 if (Negocio.armazemTemEspacoPraIsso(qtdarmazem, idarmazem))
                 {
-                    var dias = dtFim - dtInicio;
-                    decimal valorTotal = Convert.ToInt32(((dias.TotalDays * 10) * qtdarmazem) + 1000);
+                    var dias = Negocio.retornaDiferencaEntreDuasDatas(dtFim, dtInicio);
+                    decimal valorTotal = Convert.ToInt32(((dias * 10) * qtdarmazem) + 1000);
 
                     if (Session["User"] != null)
                     {
@@ -203,8 +203,8 @@ namespace SistemaArmazem.Controllers
                     }
                     else
                     {
-                        dias = dtFim - dtInicio;
-                        valorTotal = Convert.ToInt32(((dias.TotalDays * 10) * qtdarmazem) + 1000);
+                        dias = Negocio.retornaDiferencaEntreDuasDatas(dtFim, dtInicio);
+                        valorTotal = Convert.ToInt32(((dias * 10) * qtdarmazem) + 1000);
                         string msg = "Valor total a ser pago e: " + valorTotal;
                         TempData["certo"] = msg;
                         return View();
@@ -245,10 +245,15 @@ namespace SistemaArmazem.Controllers
         [HttpPost]
         public JsonResult PaineldeControleAdmin(int pedidoId)
         {
+            ClienteRepository clienteRepository = new ClienteRepository();
+            
             PedidoRepository pedidoRepository = new PedidoRepository();
             var pedido = pedidoRepository.Buscar(pedidoId);
+            var cliente = clienteRepository.Buscar(pedido.clienteId);
             pedido.ckstatus = true;
             pedidoRepository.Update(pedido);
+            EnviarMensagem em = new EnviarMensagem("daniel.hpassos@gmail.com", cliente.email, "Vindo do Sistema de Armazem", String.Format("Olá {0},\n\nSeu pedido acaba de ter seu status alterado para PAGO!\n\nOs dados do seu pedido são,\nCliente: {0}\nClasse Prod: {1}\nSubClasse Prod: {2}\nData de Início: {3}\nData de Fim: {4}\nValor total a ser pago: {5}\nStatus do pedido: {6}", cliente.nome, pedido.classeId, pedido.subclasseId, pedido.dtInicio, pedido.dtFim, pedido.valorTotal, "Pago"), "Daniel");
+            em.SubmeterEmail();
 
             return Json(new { mensagem = "Status de pagamento alterado com sucesso!" });
         }
