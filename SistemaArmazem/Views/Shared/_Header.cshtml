@@ -11,22 +11,32 @@
             </div>
             <div id="menu-fixo" class="navbar-collapse collapse">
                 <ul class="nav navbar-nav pull-right">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("Simulacao", "Simulacao", "Home")</li>
-                    <li>@Html.ActionLink("Contato", "Contato", "Home")</li>
                     @if (Session["User"] == null)
                     {
-                    <li>@Html.ActionLink("Login", "Login", "Home")</li>
+                        <li>@Html.ActionLink("Home", "Index", "Home")</li>
+
+                        <li>@Html.ActionLink("Simulacao", "Simulacao", "Home")</li>
+
+                        <li>@Html.ActionLink("Contato", "Contato", "Home")</li>
+
+                        <li>@Html.ActionLink("Login", "Login", "Home")</li>
+
+                        <li>
+                            <button class="btn btn-default btn-cadastrar-menu">
+                                @Html.ActionLink("Cadastre-se", "Cadastrar", "Home")
+                            </button>
+                        </li>
                     }
                     else
-                    { 
-                    <li>@Html.ActionLink("LogOff", "LogOff", "Home")</li>
+                    {
+                        <li>@Html.ActionLink("Home", "Index", "Home")</li>
+
+                        <li>@Html.ActionLink("Pedido", "Simulacao", "Home")</li>
+
+                        <li>@Html.ActionLink("Contato", "Contato", "Home")</li>
+
+                        <li>@Html.ActionLink("LogOff", "LogOff", "Home")</li>
                     }
-                    <li>
-                        <button class="btn btn-default btn-cadastrar-menu">
-                            @Html.ActionLink("Cadastre-se", "Cadastrar", "Home")
-                        </button>
-                    </li>
                 </ul>
             </div>
         </div>

@@ -1,5 +1,6 @@
 ﻿@using SistemaArmazem.Models.Repositories
 @using SistemaArmazem.Models.Negocio
+@model SistemaArmazem.Models.Entities.SubClasse
 @{
     ClasseRepository classeRepository = new ClasseRepository();
     ArmazenagemRepository armazenagemRepository = new ArmazenagemRepository();
@@ -40,13 +41,10 @@
                                 <option value="0" class="dropdown-header">Escolha a classe</option>
                                 @{
                     
-                    int count = 1;
                     foreach (var c in classeRepository.Listar())
                     {
-                        <option value="@count">Classe @count - @c.nmClasse</option>
-                        count++;
+                        <option value="@c.classeId">Classe @c.classeId - @c.nmClasse</option>
                     }
-                    count = 1;
                                 }
                             </select>
                         </div>
@@ -68,13 +66,10 @@
                                 <option value="0" class="dropdown-header">Escolha a armazenagem</option>
                                 @{
                     
-                    int count2 = 1;
                     foreach (var c in armazenagemRepository.Listar())
                     {
-                        <option value="@count">Classe @count - @c.tpArmazenagem</option>
-                        count2++;
+                        <option value="@c.armazenagemId">Classe @c.armazenagemId - @c.tpArmazenagem</option>
                     }
-                    count2 = 1;
                                 }
                             </select>
                         </div>
@@ -83,13 +78,16 @@
                     <!-- direita -->
                     <div class="col-sm-6">
                         <div class="group-form grupo-prod">
-                            <label for="qtde-prod">Selecione a Quantidade.</label><br />
-                            <label class="text-info">Total disponível no momento é: </label>
-                            @foreach (var armazem in tamanhoArmazemRepository.Listar())
-                            {
-                                <label class="alert-success">@Negocio.espacoLivre(armazem.tamanhoArmazemId)</label>
-                            }
-                            <input type="number" id="qtde-prod" name="qtd" class="form-control" placeholder="ex: 2">
+                            <label class="text-info">Escolha qual armazem deseja: </label>
+                            <select class="form-control" id="idarmazem" name="idarmazem">
+                                <option value="0">Escolher armazém</option>
+
+                                @foreach (var armazem in tamanhoArmazemRepository.Listar())
+                                {
+                                    <option value="@armazem.tamanhoArmazemId">Nº: @armazem.tamanhoArmazemId Disponível: @Negocio.espacoLivre(armazem.tamanhoArmazemId)</option>
+                                }
+                            </select>
+                            <label class="text-info">Escolha a quantidade de espaço: </label><input type="number" id="qtde-prod" name="qtdarmazem" class="form-control" placeholder="ex: 20" value="0">
                         </div>
                         <div class="row grupo-prod">
                             <div class="col-sm-6">
@@ -127,24 +125,36 @@
         </div>
     </section>
 </div>
-<script>
-    $(document).ready(function () {
-        var classeCombo = $("#classe");
-        var subclasseCombo = $("#subclasse");
+@if (TempData["certo"] != null)
+{
+    <script>alert("@TempData["certo"].ToString()");</script>
+}
+@if (TempData["erro"] != null)
+{
+    <script>alert("@TempData["erro"].ToString()");</script>
+}
+<script type="text/javascript">
+    $(document).ready(function () 
+    {
+        var subclasseCombo = $("#subclasse-prod");
 
+        $("#classe-prod").change(function () {
 
-        $(classeCombo).change(function () {
-            subclasseCombo.html = "";
+            subclasseCombo.html("");
+            subclasseCombo.append("<option value='0' class='dropdown-header'>Escolha a subclasse</option>");
+
+            var classeCombo = $("#classe-prod");
             $.getJSON(
                 "/Home/trazerSubClasse",
-                classeCombo.val(),
-                function (data) {
-
-                    $.each(
-                        data,
-                        function (i, item) {
-                            subclasseCombo.append("<option value=" + (i + 1) + ">" + item.nmSubClasse + "</option>");
-                        });
+                {
+                    idClasse: classeCombo.val()
+                },
+                function (data)
+                {
+                    $.each(data,function (index,item)
+                    {
+                        subclasseCombo.append("<option value="+item.subclasseId+" >"+item.nmSubClasse+"</option>");
+                    });
                 });
         });
     });

@@ -26,12 +26,26 @@ namespace SistemaArmazem.Models.Context
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Conventions.Remove(new PluralizingTableNameConvention());
+            modelBuilder.Conventions.Remove(new PluralizingEntitySetNameConvention());
             modelBuilder.Entity<Cliente>().HasKey(x => x.clienteId);
             modelBuilder.Entity<Classe>().HasKey(x => x.classeId);
-            modelBuilder.Entity<SubClasse>().HasKey(x => x.subclasseId);
-            modelBuilder.Entity<Armazenagem>().HasKey(x => x.armazenagemId);
-            modelBuilder.Entity<Armazem>().HasKey(x => x.armazemId);
-            modelBuilder.Entity<Pedido>().HasKey(x => x.pedidoId);
+
+            modelBuilder.Entity<SubClasse>().HasKey(x => x.subclasseId);//primary key
+            modelBuilder.Entity<SubClasse>().HasRequired(x => x.classe);//foreign key
+
+            modelBuilder.Entity<Armazenagem>().HasKey(x => x.armazenagemId);//primary key
+
+            modelBuilder.Entity<Armazem>().HasKey(x => x.armazemId);//primary key
+            modelBuilder.Entity<Armazem>().HasRequired(x => x.cliente);//foreign key
+            modelBuilder.Entity<Armazem>().HasRequired(x => x.tamanhoArmazem);//foreigh key
+
+            modelBuilder.Entity<Pedido>().HasKey(x => x.pedidoId);//primary key
+            modelBuilder.Entity<Pedido>().HasRequired(x => x.armazem).WithMany().WillCascadeOnDelete(false);//foreigh key
+            modelBuilder.Entity<Pedido>().HasRequired(x => x.armazenagem).WithMany().WillCascadeOnDelete(false);//foreigh key
+            modelBuilder.Entity<Pedido>().HasRequired(x => x.classe).WithMany().WillCascadeOnDelete(false);//foreigh key
+            modelBuilder.Entity<Pedido>().HasRequired(x => x.cliente).WithMany().WillCascadeOnDelete(false);//foreigh key
+            modelBuilder.Entity<Pedido>().HasRequired(x => x.subclasse).WithMany().WillCascadeOnDelete(false);//foreigh key
+
             modelBuilder.Entity<TamanhoArmazem>().HasKey(x => x.tamanhoArmazemId);
 
             modelBuilder.Properties<string>()

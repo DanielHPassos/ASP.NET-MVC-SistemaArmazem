@@ -25,3 +25,7 @@
             </section>
         </div>
     </section>
+@if (TempData["certo"] != null)
+{
+    <script>alert("@TempData["certo"].ToString()");</script>
+}

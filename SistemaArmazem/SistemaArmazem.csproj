@@ -130,6 +130,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Context\Contexto.cs" />
     <Compile Include="Models\Entities\Armazem.cs" />
     <Compile Include="Models\Entities\Armazenagem.cs" />
