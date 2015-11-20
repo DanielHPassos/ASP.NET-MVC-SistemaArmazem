@@ -1,0 +1,78 @@
+﻿<div class="row">
+    <section class="conteudo-branco">
+        <div class="container">
+            <div class="conteudo row">
+                <div class="cabecalho col-sm-12">
+                    <h1>Listagem de Pedidos</h1>
+                </div>
+                <div class="container-lista">
+                    <table id="tbl" class="table table-bordered table-striped">
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+@if (TempData["certo"] != null)
+{
+    <script>alert("@TempData["certo"].ToString()");</script>
+}
+
+<script>
+    $(document).ready(function () {
+
+        CarregarTabela();
+    });
+    function CarregarTabela()
+    {
+        $.getJSON(
+                "/Home/trazerPedidosUsuario",
+                null,
+                function (data) {
+                    var table = $('#tbl');
+                    table.html("");
+                    table.append("<tr>" +
+                                "<th>Pedido Id</th>" +
+                                "<th>Classe</th>" +
+                                "<th>Subclasse</th>" +
+                                "<th>Tipo de Armazenagem</th>" +
+                                "<th>Data Inicio</th>" +
+                                "<th>Data Fim</th>" +
+                                "<th>Valor Total</th>" +
+                                "<th>Status Pagamento</th>" +
+                        "</tr>");
+
+                    $.each(
+                        data,
+                        function (i, item) {
+                            if (item.ckstatus == false) {
+                                table.append("<tr id = " + i + ">" +
+                               "<td align='center'>" + item.pedidoId + "</td>" +
+                               "<td align='center'>" + item.classeId + "</td>" +
+                               "<td align='center'>" + item.subclasseId + "</td>" +
+                               "<td align='center'>" + item.armazenagemId + "</td>" +
+                               "<td align='center'>" + item.dtInicio + "</td>" +
+                               "<td align='center'>" + item.dtFim + "</td>" +
+                               "<td align='center'>" + item.valorTotal + "</td>" +
+                               "<td align='center'><button class='btn btn-danger' id='status' >Aguardando Pagamento</button></td>" +
+                               "</tr>");
+                            }
+                            else
+                            {
+                                table.append("<tr id = " + i + ">" +
+                                "<td align='center'>" + item.pedidoId + "</td>" +
+                                "<td align='center'>" + item.classeId + "</td>" +
+                                "<td align='center'>" + item.subclasseId + "</td>" +
+                                "<td align='center'>" + item.armazenagemId + "</td>" +
+                                "<td align='center'>" + item.dtInicio + "</td>" +
+                                "<td align='center'>" + item.dtFim + "</td>" +
+                                "<td align='center'>" + item.valorTotal + "</td>" +
+                                "<td align='center'><button class='btn btn-success' id='status'>Pago</button></td>" +
+                                "</tr>");
+                            }
+
+                        });
+                });
+    }
+
+</script>
