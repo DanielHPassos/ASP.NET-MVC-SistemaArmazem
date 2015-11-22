@@ -8,6 +8,7 @@
         public int subclasseId { get; set; }
         public int armazenagemId { get; set; }
         public int armazemId { get; set; }
+        public string produto { get; set; }
         public string dtInicio { get; set; }
         public string dtFim { get; set; }
         public decimal valorTotal { get; set; }

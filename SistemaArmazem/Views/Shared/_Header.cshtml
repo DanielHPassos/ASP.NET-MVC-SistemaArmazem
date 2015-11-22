@@ -29,8 +29,14 @@
                     else
                     {
                         <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                        if (((Cliente)(Session["User"])).grupo == "admin")
+                        {
 
-                        <li>@Html.ActionLink("Pedido", "Simulacao", "Home")</li>
+                        }
+                        else
+                        {
+                            <li>@Html.ActionLink("Pedido", "Simulacao", "Home")</li>
+                        }
 
                         <li>@Html.ActionLink("Contato", "Contato", "Home")</li>
 

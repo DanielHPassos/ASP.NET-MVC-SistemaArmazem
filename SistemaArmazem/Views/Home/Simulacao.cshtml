@@ -10,15 +10,7 @@
         <div class="container">
             <div class="conteudo row">
                 <div class="cabecalho col-sm-12">
-                    <!--
-                        /<h1> e <p> muda se o usuário estiver logado/
-                        Se estiver logado:
-                            h1: Lista de armazenagem
-                            p: (nada)
-                        Senão:
-                            h1: Simulação
-                            p: A área de simulação é destinada àqueles que querem estimar o preço para a armazenagem
-                     -->
+
                     @if (Session["User"] == null)
                     {
                         <h1>Simulação</h1>
@@ -34,6 +26,12 @@
                 {
                     <!-- esquerda -->
                     <div class="col-sm-6">
+
+                        <div class="form-group grupo-prod">
+                            <label for="produto">Digite seu produto</label>
+                            <input id="produto" name="produto" class="form-control" type="text"/>
+                        </div>
+
                         <div class="form-group grupo-prod">
                             <label for="classe-prod">Escolha a classe do seu produto</label>
                             <select name="classe" id="classe-prod" class="form-control">
@@ -92,13 +90,13 @@
                             <div class="col-sm-6">
                                 <div class="group-form">
                                     <label for="dt-inicio-prod">Data de Início</label>
-                                    <input type="date" id="dt-inicio-prod" name="dtInicio" class="form-control">
+                                    <input type="date" id="dt-inicio-prod" value="2015-01-01" name="dtInicio" class="form-control">
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="group-form">
                                     <label for="dt-fim-prod">Data de Fim</label>
-                                    <input type="date" id="dt-fim-prod" name="dtFim" class="form-control">
+                                    <input type="date" id="dt-fim-prod" value="2015-01-01" name="dtFim" class="form-control">
                                 </div>
                             </div>
                         </div>
@@ -135,6 +133,8 @@
 <script type="text/javascript">
     $(document).ready(function () 
     {
+        //$("#dt-fim-prod").val(new Date().toDateInputValue());
+        //$("#dt-inicio-prod").val(new Date().toDateInputValue());
         var subclasseCombo = $("#subclasse-prod");
 
         $("#classe-prod").change(function () {

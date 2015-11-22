@@ -9,16 +9,17 @@ namespace SistemaArmazem.Models.Entities
     public class Pedido
     {
         //Pedido representa os dados do pedido em si, sendo eles...
-        public int          pedidoId        { get; set; }                  //Numeração do pedido
-        public int          clienteId       { get; set; }                 //Numeração do cliente
-        public int          classeId        { get; set; }                  //Classe do produto
-        public int          subclasseId     { get; set; }               //SubClasse do produto
-        public int          armazenagemId   { get; set; }             //Tipo de armazenagem do produto
-        public int          armazemId       { get; set; }                 //Espaço que está sendo alocado nesse pedido¹
-        public DateTime     dtInicio        { get; set; }                  //Data de início do armazenamento
-        public DateTime     dtFim           { get; set; }                     //Data de fim do armazenamento
-        public decimal      valorTotal      { get; set; }                //Valor total pago
-        public bool         ckstatus        { get; set; }                  //Status marca se o Admin aprovou a solicitação²
+        public int          pedidoId        { get; set; }                   //Numeração do pedido
+        public int          clienteId       { get; set; }                   //Numeração do cliente
+        public int          classeId        { get; set; }                   //Classe do produto
+        public int          subclasseId     { get; set; }                   //SubClasse do produto
+        public int          armazenagemId   { get; set; }                   //Tipo de armazenagem do produto
+        public int          armazemId       { get; set; }                   //Espaço que está sendo alocado nesse pedido¹
+        public string       produto         { get; set; }                   //Nome do produto
+        public DateTime     dtInicio        { get; set; }                   //Data de início do armazenamento
+        public DateTime     dtFim           { get; set; }                   //Data de fim do armazenamento
+        public decimal      valorTotal      { get; set; }                   //Valor total pago
+        public bool         ckstatus        { get; set; }                   //Status marca se o Admin aprovou a solicitação²
 
         [ForeignKey("clienteId")]
         public Cliente cliente { get; set; }

@@ -28,7 +28,7 @@ namespace SistemaArmazem.Controllers
         {
             try
             {
-                EnviarMensagem em = new EnviarMensagem("daniel.hpassos@gmail.com", "daniel.hpassos@gmail.com", "Vindo do Sistema de Armazem", texto, nome);
+                EnviarMensagem em = new EnviarMensagem("daniel.hpassos@gmail.com", "daniel.hpassos@gmail.com", "Vindo do Sistema de Armazem", texto+"\n\n"+email, nome);
                 em.SubmeterEmail();
                 TempData["certo"] = "Enviado com Sucesso!";
                 return View();
@@ -135,29 +135,29 @@ namespace SistemaArmazem.Controllers
         }
 
         [HttpPost]
-        public ActionResult Simulacao(string classe, string subclasse, string armazenagem, int idarmazem, int qtdarmazem,
+        public ActionResult Simulacao(string produto, string classe, string subclasse, string armazenagem, int idarmazem, int qtdarmazem,
             DateTime dtInicio, DateTime dtFim)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(classe) && string.IsNullOrWhiteSpace(subclasse) && string.IsNullOrWhiteSpace(subclasse) && string.IsNullOrWhiteSpace(armazenagem))
+                if (string.IsNullOrWhiteSpace(classe) || string.IsNullOrWhiteSpace(subclasse) || string.IsNullOrWhiteSpace(subclasse) || string.IsNullOrWhiteSpace(armazenagem) || string.IsNullOrWhiteSpace(produto))
                 {
-                    TempData["erro"] = "Não deixe espaços em branco!";
+                    TempData["erro"] = "Nao deixe espacos em branco!";
                     return View();
                 }
                 if (DateTime.Now.Ticks > dtInicio.Ticks)
                 {
-                    TempData["erro"] = "A data de inicio não pode ser menor que a data de hoje!";
+                    TempData["erro"] = "A data de inicio nao pode ser menor que a data de hoje!";
                     return View();
                 }
                 if (dtFim.Ticks <= dtInicio.Ticks)
                 {
-                    TempData["erro"] = "A data de Fim não pode ser menor que a data de Inicio!";
+                    TempData["erro"] = "A data de Fim nao pode ser menor ou igual a data de Inicio!";
                     return View();
                 }
                 if (qtdarmazem <= 0)
                 {
-                    TempData["erro"] = "Quantidade de espaço não pode ser zero ou vazia!";
+                    TempData["erro"] = "Quantidade de espaco nao pode ser zero ou vazia!";
                     return View();
                 }
                 if (Negocio.armazemTemEspacoPraIsso(qtdarmazem, idarmazem))
@@ -186,7 +186,8 @@ namespace SistemaArmazem.Controllers
                             classeId = Convert.ToInt32(classe),
                             subclasseId = Convert.ToInt32(subclasse),
                             armazenagemId = Convert.ToInt32(armazenagem),
-                            armazem = armazem,//Convert.ToInt32(idarmazem),
+                            produto = produto,
+                            armazem = armazem,
                             dtInicio = dtInicio,
                             dtFim = dtFim,
                             valorTotal = valorTotal,
@@ -196,10 +197,10 @@ namespace SistemaArmazem.Controllers
                         pedidoRepository.Add(pedido);
 
                         string msg = "Valor total a ser pago e: " + valorTotal + "\nOs dados do seu pedido, serao enviados para o seu e-mail.\nVerifique sua caixa de entrada.";
-                        EnviarMensagem em = new EnviarMensagem("daniel.hpassos@gmail.com", email, "Vindo do Sistema de Armazem", String.Format("Olá {0},\n\nObrigado por realizar o pedido em nosso sistema!\n\nOs dados do seu pedido são,\nCliente: {0}\nClasse Prod: {1}\nSubClasse Prod: {2}\nID do Armazem: {3}\nData de Início: {4}\nData de Fim: {5}\nValor total a ser pago: {6}\nStatus do pedido: {7}", nome, classe, subclasse, idarmazem, dtInicio, dtFim, valorTotal, "Não pago"), "Daniel");
+                        EnviarMensagem em = new EnviarMensagem("daniel.hpassos@gmail.com", email, "Vindo do Sistema de Armazem", String.Format("Olá {0},\n\nObrigado por realizar o pedido em nosso sistema!\n\nOs dados do seu pedido são,\nCliente: {0}\nProduto: {8}\nClasse Prod: {1}\nSubClasse Prod: {2}\nID do Armazem: {3}\nData de Início: {4}\nData de Fim: {5}\nValor total a ser pago: {6}\nStatus do pedido: {7}", nome, classe, subclasse, idarmazem, dtInicio, dtFim, valorTotal, "Não pago",produto), "Daniel");
                         em.SubmeterEmail();
                         TempData["certo"] = msg;
-                        return View("Index");
+                        return View("PaineldeControleUsuario");
                     }
                     else
                     {
@@ -246,13 +247,13 @@ namespace SistemaArmazem.Controllers
         public JsonResult PaineldeControleAdmin(int pedidoId)
         {
             ClienteRepository clienteRepository = new ClienteRepository();
-            
+
             PedidoRepository pedidoRepository = new PedidoRepository();
             var pedido = pedidoRepository.Buscar(pedidoId);
             var cliente = clienteRepository.Buscar(pedido.clienteId);
             pedido.ckstatus = true;
             pedidoRepository.Update(pedido);
-            EnviarMensagem em = new EnviarMensagem("daniel.hpassos@gmail.com", cliente.email, "Vindo do Sistema de Armazem", String.Format("Olá {0},\n\nSeu pedido acaba de ter seu status alterado para PAGO!\n\nOs dados do seu pedido são,\nCliente: {0}\nClasse Prod: {1}\nSubClasse Prod: {2}\nData de Início: {3}\nData de Fim: {4}\nValor total a ser pago: {5}\nStatus do pedido: {6}", cliente.nome, pedido.classeId, pedido.subclasseId, pedido.dtInicio, pedido.dtFim, pedido.valorTotal, "Pago"), "Daniel");
+            EnviarMensagem em = new EnviarMensagem("daniel.hpassos@gmail.com", cliente.email, "Vindo do Sistema de Armazem", String.Format("Olá {0},\n\nSeu pedido acaba de ter seu status alterado para PAGO!\n\nOs dados do seu pedido são,\nCliente: {0}\nProduto: {7}\nClasse Prod: {1}\nSubClasse Prod: {2}\nData de Início: {3}\nData de Fim: {4}\nValor total da quantia paga: {5}\nStatus do pedido: {6}", cliente.nome, pedido.classeId, pedido.subclasseId, pedido.dtInicio, pedido.dtFim, pedido.valorTotal, "Pago",pedido.produto), "Daniel");
             em.SubmeterEmail();
 
             return Json(new { mensagem = "Status de pagamento alterado com sucesso!" });
@@ -274,6 +275,7 @@ namespace SistemaArmazem.Controllers
                     subclasseId = item.subclasseId,
                     armazenagemId = item.armazenagemId,
                     armazemId = item.armazemId,
+                    produto = item.produto,
                     dtInicio = item.dtInicio.ToShortDateString(),
                     dtFim = item.dtFim.ToShortDateString(),
                     valorTotal = item.valorTotal,
@@ -301,6 +303,7 @@ namespace SistemaArmazem.Controllers
                     subclasseId = item.subclasseId,
                     armazenagemId = item.armazenagemId,
                     armazemId = item.armazemId,
+                    produto = item.produto,
                     dtInicio = item.dtInicio.ToShortDateString(),
                     dtFim = item.dtFim.ToShortDateString(),
                     valorTotal = item.valorTotal,
